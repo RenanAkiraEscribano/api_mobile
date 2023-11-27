@@ -1,50 +1,50 @@
 const db = require('../db');
 
 module.exports = {    
-    getAll: () => {
-        const query = `SELECT * FROM Metodologias`;
+    getAll: (email) => {
+        const query = `SELECT * FROM Metodologias WHERE emailUsuario = ? ORDER BY idMetodologia DESC`;
         return new Promise((resolve, reject) => {
-            db.query(query, (error, results) => {
+            db.query(query, [email], (error, results) => {
                 if (error) { reject(error); return; }
                 resolve(results);
             });
         });
     },
-    findById: (id_Metodologia) => {
-        const query = `SELECT * FROM Metodologias WHERE id_Metodologia = ?`;
+    findById: (idMetodologia) => {
+        const query = `select * from Metodologias where idMetodologia = ?`;
         return new Promise((resolve, reject) => {
-            db.query(query, [id_Metodologia], (error, results) => {
+            db.query(query, [idMetodologia], (error, results) => {
                 if (error) { reject(error); return; }
-                if (results.lenght > 0){
-                    resolve(results[0]);
-                }else{
+                if (results) {
+                    resolve(results);
+                } else {
                     resolve(false)
                 }
             });
         });
     },
-    add: (id_Usuario, metodo) => {
-        const query = `INSERT INTO Metodologias VALUES (?,?,?)`;
+    add: (email, nomeMetodologia) => {
+        const query = `INSERT INTO Metodologias VALUES (?,?,?,?,?)`;
         return new Promise((resolve, reject) => {
-            db.query(query, [0, id_Usuario, metodo], (error, results) => {
+            db.query(query, [0, email, nomeMetodologia, 0, 0], (error, results) => {
                 if (error) { reject(error); return; }
                 resolve(results.insertId);
             })
         });
     },
-    update: (id_Metodologia, id_Usuario, metodo) => {
-        const query = `UPDATE Metodologias SET id_Usuario = ?, metodo = ? WHERE id_Metodologia = ?`;
+    update: (idMetodologia, email, nomeMetodologia, revisada, numeroRevisoes) => {
+        const query = `UPDATE Metodologias SET emailUsuario = ?, nomeMetodologia = ?, revisada = ?, numeroRevisoes = ? WHERE idMetodologia = ?`;
         return new Promise((resolve, reject) => {
-            db.query(query, [id_Usuario, metodo, id_Metodologia], (error, results) => {
+            db.query(query, [email, nomeMetodologia, revisada, numeroRevisoes, idMetodologia], (error, results) => {
                 if (error) { reject(error); return; }
                 resolve(results);
             })
         });
     },
-    delete: (id_Metodologia) => {
-        const query = `DELETE FROM Metodologias WHERE id_Metodologia = ?`;
+    delete: (idMetodologia) => {
+        const query = `DELETE FROM Metodologias WHERE idMetodologia = ?`;
         return new Promise((resolve, reject) => {
-            db.query(query, [id_Metodologia], (error, results) => {
+            db.query(query, [idMetodologia], (error, results) => {
                 if (error) { reject(error); return; }
                 resolve(results);
             })
